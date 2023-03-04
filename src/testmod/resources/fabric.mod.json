@@ -5,19 +5,20 @@
   "name": "Multiblock Lib Test",
   "description": "Test mod for Multiblock lib",
   "authors": [
-    "Jamalam360 - Developer"
+    "cnlimiter - Developer",
+    "Jamalam360 - Author"
   ],
   "contact": {
-    "homepage": "https://github.com/JamCoreModding/MultiblockLib",
-    "issues": "https://github.com/JamCoreModding/MultiblockLib/issues",
-    "sources": "https://github.com/JamCoreModding/MultiblockLib"
+    "homepage": "https://github.com/cnlimiter/MultiblockLib",
+    "issues": "https://github.com/cnlimiter/MultiblockLib/issues",
+    "sources": "https://github.com/cnlimiter/MultiblockLib"
   },
   "license": "MIT",
   "icon": "assets/multiblocklibtest/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.jamalam360.multiblocklib.testmod.TestInit"
+      "cn.evolvefield.mods.multiblocklib.testmod.TestInit"
     ]
   },
   "mixins": [

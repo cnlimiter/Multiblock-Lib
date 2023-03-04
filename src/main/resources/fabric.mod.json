@@ -5,22 +5,23 @@
   "name": "Multiblock Lib",
   "description": "A library for multiblocks!",
   "authors": [
-    "Jamalam360 - Developer"
+    "cnlimiter - Developer",
+    "Jamalam360 - Author"
   ],
   "contact": {
-    "homepage": "https://github.com/JamCoreModding/MultiblockLib",
-    "issues": "https://github.com/JamCoreModding/MultiblockLib/issues",
-    "sources": "https://github.com/JamCoreModding/MultiblockLib"
+    "homepage": "https://github.com/cnlimiter/MultiblockLib",
+    "issues": "https://github.com/cnlimiter/MultiblockLib/issues",
+    "sources": "https://github.com/cnlimiter/MultiblockLib"
   },
   "license": "MIT",
   "icon": "assets/multiblocklib/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.jamalam360.multiblocklib.impl.MultiblockLibEntrypoint"
+      "cn.evolvefield.mods.multiblocklib.impl.MultiblockLibEntrypoint"
     ],
     "cardinal-components-world": [
-      "io.github.jamalam360.multiblocklib.impl.MultiblockComponentsInit"
+      "cn.evolvefield.mods.multiblocklib.impl.MultiblockComponentsInit"
     ]
   },
   "mixins": [
@@ -31,7 +32,7 @@
     "fabric": "*"
   },
   "custom": {
-    "notify_gradle_properties_url": "https://raw.githubusercontent.com/JamCoreModding/MultiblockLib/main/gradle.properties",
+    "notify_gradle_properties_url": "https://raw.githubusercontent.com/cnlimiter/MultiblockLib/main/gradle.properties",
     "notify_gradle_properties_key": "modVersion",
     "cardinal-components": [
       "multiblocklib:multiblock_provider"

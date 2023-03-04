@@ -1,7 +1,7 @@
 {
   "required": true,
-  "package": "io.github.jamalam360.multiblocklib.impl.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "package": "cn.evolvefield.mods.multiblocklib.impl.mixin",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AbstractBlockMixin",
     "BlockMixin"
