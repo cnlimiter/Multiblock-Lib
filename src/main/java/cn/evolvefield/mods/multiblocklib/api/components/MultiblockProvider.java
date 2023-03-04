@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,16 +27,16 @@ package cn.evolvefield.mods.multiblocklib.api.components;
 import cn.evolvefield.mods.multiblocklib.api.Multiblock;
 import cn.evolvefield.mods.multiblocklib.impl.components.MultiblockProviderImpl;
 import dev.onyxstudios.cca.api.v3.component.ComponentV3;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Optional;
 
 /**
- * A cardinal component that stores all created {@link Multiblock}s in the {@link World}.
+ * A cardinal component that stores all created {@link Multiblock}s in the {@link net.minecraft.world.level.Level}.
  *
  * @author Jamalam360
+ * @devoloper cnlimiter
  * @implSpec The implementation should also tick the {@link Multiblock}s using
  * {@link Multiblock#tick}, and save them to NBT.
  * @see MultiblockProviderImpl

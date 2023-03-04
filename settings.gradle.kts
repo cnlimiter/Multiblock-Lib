@@ -1,10 +1,12 @@
 pluginManagement {
     repositories {
-        var mavenUrls = listOf(
+        val mavenUrls = listOf(
             "https://maven.fabricmc.net/",
+            "https://maven.parchmentmc.org",
             "https://server.bbkr.space/artifactory/libs-release/",
             "https://maven.quiltmc.org/repository/release",
-            "https://maven.jamalam.tech/releases"
+            "https://maven.jamalam.tech/releases",
+
         )
 
         for (url in mavenUrls) {

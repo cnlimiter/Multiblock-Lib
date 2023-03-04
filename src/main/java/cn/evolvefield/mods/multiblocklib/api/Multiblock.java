@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,41 +25,42 @@
 package cn.evolvefield.mods.multiblocklib.api;
 
 import cn.evolvefield.mods.multiblocklib.api.pattern.MatchResult;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 @SuppressWarnings("unused")
 public abstract class Multiblock {
-    private final World world;
+    private final Level world;
     private final MatchResult matchResult;
     private final VoxelShape shape;
 
-    public Multiblock(World world, MatchResult match) {
+    public Multiblock(Level world, MatchResult match) {
         this.world = world;
         this.matchResult = match;
-        this.shape = Block.createCuboidShape(0, 0, 0, match.width() * 16, match.height() * 16, match.depth() * 16);
+        this.shape = Block.box(0, 0, 0, match.width() * 16, match.height() * 16, match.depth() * 16);
     }
 
     public void tick() {
     }
 
-    public ActionResult onUse(World world, BlockPos clickPos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
-        return ActionResult.PASS;
+    public InteractionResult onUse(Level world, BlockPos clickPos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        return InteractionResult.PASS;
     }
 
     public void onNeighborUpdate(BlockPos pos, BlockPos neighborPos) {
@@ -77,25 +78,25 @@ public abstract class Multiblock {
         return shape;
     }
 
-    public NbtCompound writeTag() {
-        return new NbtCompound();
+    public CompoundTag writeTag() {
+        return new CompoundTag();
     }
 
-    public void readTag(NbtCompound tag) {
+    public void readTag(CompoundTag tag) {
     }
 
     public List<BlockState> getBlocks(Block block) {
-        return getBlocks((cachedBlockPosition -> cachedBlockPosition.getBlockState().isOf(block)));
+        return getBlocks((cachedBlockPosition -> cachedBlockPosition.getState().is(block)));
     }
 
-    public List<BlockState> getBlocks(Predicate<CachedBlockPosition> predicate) {
-        return BlockPos.stream(matchResult.box())
-                .filter((blockPos) -> predicate.test(new CachedBlockPosition(world, blockPos, true)))
+    public List<BlockState> getBlocks(Predicate<BlockInWorld> predicate) {
+        return BlockPos.betweenClosedStream(matchResult.box())
+                .filter((blockPos) -> predicate.test(new BlockInWorld(world, blockPos, true)))
                 .map(world::getBlockState)
                 .toList();
     }
 
-    public World getWorld() {
+    public Level getLevel() {
         return world;
     }
 

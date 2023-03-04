@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,15 +26,15 @@ package cn.evolvefield.mods.multiblocklib.impl.mixin;
 
 import cn.evolvefield.mods.multiblocklib.api.Multiblock;
 import cn.evolvefield.mods.multiblocklib.api.MultiblockLib;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -45,19 +45,20 @@ import java.util.Optional;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 
-@Mixin(AbstractBlock.class)
+@Mixin(BlockBehaviour.class)
 public abstract class AbstractBlockMixin {
     /**
      * Checks if the block is a part of a multiblock, and if it is, forwards the {@code onUse} call to the multiblock.
      */
     @Inject(
-            method = "onUse",
+            method = "use",
             at = @At("HEAD"),
             cancellable = true
     )
-    public void multiblocklib$checkForMultiblockOnUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
+    public void multiblocklib$checkForMultiblockOnUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
         Optional<Multiblock> multiblock = MultiblockLib.INSTANCE.getMultiblock(world, pos);
         multiblock.ifPresent(value -> cir.setReturnValue(value.onUse(world, pos, player, hand, hit)));
     }
@@ -66,10 +67,10 @@ public abstract class AbstractBlockMixin {
      * Checks if the block is a part of a multiblock, and if it is, forwards the {@code neighborUpdate} event to the multiblock.
      */
     @Inject(
-            method = "neighborUpdate",
+            method = "neighborChanged",
             at = @At("HEAD")
     )
-    public void multiblocklib$checkForMultiblockNeighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify, CallbackInfo ci){
+    public void multiblocklib$checkForMultiblockNeighborUpdate(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify, CallbackInfo ci){
         Optional<Multiblock> multiblock = MultiblockLib.INSTANCE.getMultiblock(world, pos);
         multiblock.ifPresent(value -> value.onNeighborUpdate(pos, fromPos));
     }

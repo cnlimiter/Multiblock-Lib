@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,63 +26,63 @@ package cn.evolvefield.mods.multiblocklib.testmod;
 
 import cn.evolvefield.mods.multiblocklib.api.Multiblock;
 import cn.evolvefield.mods.multiblocklib.api.pattern.MatchResult;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
-public class BigChestMultiblock extends Multiblock implements NamedScreenHandlerFactory {
-    private final SimpleInventory inventory = new SimpleInventory(54);
+public class BigChestMultiblock extends Multiblock implements MenuProvider {
+    private final SimpleContainer inventory = new SimpleContainer(54);
 
-    public BigChestMultiblock(World world, MatchResult match) {
+    public BigChestMultiblock(Level world, MatchResult match) {
         super(world, match);
     }
 
     @Override
-    public ActionResult onUse(World world, BlockPos clickPos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
-        if (world.isClient) {
-            return ActionResult.SUCCESS;
+    public InteractionResult onUse(Level world, BlockPos clickPos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (world.isClientSide) {
+            return InteractionResult.SUCCESS;
         } else {
-            player.openHandledScreen(this);
-            return ActionResult.CONSUME;
+            player.openMenu(this);
+            return InteractionResult.CONSUME;
         }
     }
 
     @Override
-    public NbtCompound writeTag() {
-        NbtCompound compound = super.writeTag();
-        compound.put("Inventory", inventory.toNbtList());
+    public CompoundTag writeTag() {
+        CompoundTag compound = super.writeTag();
+        compound.put("Inventory", inventory.createTag());
         return compound;
     }
 
     @Override
-    public void readTag(NbtCompound tag) {
+    public void readTag(CompoundTag tag) {
         super.readTag(tag);
-        inventory.readNbtList(tag.getList("Inventory", 10));
+        inventory.fromTag(tag.getList("Inventory", 10));
     }
 
     @Override
-    public Text getDisplayName() {
-        return new LiteralText("The Big Chest :yeef:");
+    public Component getDisplayName() {
+        return Component.literal("The Big Chest :yeef:");
     }
 
     @Nullable
     @Override
-    public ScreenHandler createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return GenericContainerScreenHandler.createGeneric9x6(i, playerInventory, inventory);
+    public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
+        return ChestMenu.sixRows(i, playerInventory, inventory);
     }
 }

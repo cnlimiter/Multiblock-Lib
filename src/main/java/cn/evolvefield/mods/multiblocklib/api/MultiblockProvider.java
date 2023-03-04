@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,14 +25,15 @@
 package cn.evolvefield.mods.multiblocklib.api;
 
 import cn.evolvefield.mods.multiblocklib.api.pattern.MatchResult;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Used by {@link MultiblockLib#tryAssembleMultiblock} to create a {@link Multiblock} instance.
  *
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 @FunctionalInterface
 public interface MultiblockProvider {
-    Multiblock getMultiblock(World world, MatchResult match);
+    Multiblock getMultiblock(Level world, MatchResult match);
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,27 +30,28 @@ import cn.evolvefield.mods.multiblocklib.api.components.MultiblockProvider;
 import com.google.common.collect.Maps;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 /**
- * A cardinal component that stores all created {@link Multiblock}s in the {@link World}.
+ * A cardinal component that stores all created {@link Multiblock}s in the {@link Level}.
  * It is also responsible for ticking {@link Multiblock}s.
  *
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 public class MultiblockProviderImpl implements MultiblockProvider, ServerTickingComponent, AutoSyncedComponent {
-    private final World provider;
+    private final Level provider;
     private final Map<BlockPos[], Multiblock> MULTIBLOCKS = Maps.newHashMap();
 
-    public MultiblockProviderImpl(World provider) {
+    public MultiblockProviderImpl(Level provider) {
         this.provider = provider;
     }
 
@@ -65,7 +66,7 @@ public class MultiblockProviderImpl implements MultiblockProvider, ServerTicking
     @Override
     public void addMultiblock(Multiblock multiblock) {
         List<BlockPos> positions = new ArrayList<>();
-        BlockPos.stream(multiblock.getMatchResult().box()).forEach(pos -> positions.add(pos.toImmutable()));
+        BlockPos.betweenClosedStream(multiblock.getMatchResult().box()).forEach(pos -> positions.add(pos.immutable()));
         System.out.println(positions.size());
         System.out.println(positions);
 
@@ -106,13 +107,13 @@ public class MultiblockProviderImpl implements MultiblockProvider, ServerTicking
     }
 
     @Override
-    public void writeToNbt(@NotNull NbtCompound tag) {
-        NbtCompound compound = new NbtCompound();
+    public void writeToNbt(@NotNull CompoundTag tag) {
+        CompoundTag compound = new CompoundTag();
 
         int multiblockNumber = 0;
         for (Map.Entry<BlockPos[], Multiblock> entry : MULTIBLOCKS.entrySet()) {
             multiblockNumber++;
-            NbtCompound multiblockTag = new NbtCompound();
+            CompoundTag multiblockTag = new CompoundTag();
             multiblockTag.putIntArray("BottomLeft", new int[]{entry.getValue().getMatchResult().bottomLeftPos().getX(), entry.getValue().getMatchResult().bottomLeftPos().getY(), entry.getValue().getMatchResult().bottomLeftPos().getZ()});
             multiblockTag.putString("PatternIdentifier", entry.getValue().getMatchResult().pattern().identifier().toString());
             multiblockTag.put("MultiblockTag", entry.getValue().writeTag());
@@ -124,15 +125,15 @@ public class MultiblockProviderImpl implements MultiblockProvider, ServerTicking
     }
 
     @Override
-    public void readFromNbt(NbtCompound tag) {
-        NbtCompound compound = tag.getCompound("Multiblocks");
+    public void readFromNbt(CompoundTag tag) {
+        CompoundTag compound = tag.getCompound("Multiblocks");
         int multiblockLength = compound.getInt("MultiblockLength");
 
         for (int i = 1; i <= multiblockLength; i++) {
-            NbtCompound multiblockTag = compound.getCompound("Multiblock" + i);
+            CompoundTag multiblockTag = compound.getCompound("Multiblock" + i);
             int[] bottomLeftArr = multiblockTag.getIntArray("BottomLeft");
             BlockPos bottomLeft = new BlockPos(bottomLeftArr[0], bottomLeftArr[1], bottomLeftArr[2]);
-            Identifier identifier = new Identifier(multiblockTag.getString("PatternIdentifier"));
+            ResourceLocation identifier = new ResourceLocation(multiblockTag.getString("PatternIdentifier"));
 
             if (MultiblockLib.INSTANCE.tryAssembleMultiblock(identifier, provider, Direction.EAST, bottomLeft)) {
                 this.getMultiblock(bottomLeft).ifPresent(multiblock -> multiblock.readTag(multiblockTag.getCompound("MultiblockTag")));

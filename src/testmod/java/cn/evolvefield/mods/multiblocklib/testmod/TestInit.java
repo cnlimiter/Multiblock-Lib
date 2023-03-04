@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,20 +25,20 @@
 package cn.evolvefield.mods.multiblocklib.testmod;
 
 import cn.evolvefield.mods.multiblocklib.api.Multiblock;
-import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPatternKeyBuilder;
 import cn.evolvefield.mods.multiblocklib.api.MultiblockLib;
+import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPatternKeyBuilder;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 
 import java.util.Map;
 import java.util.Optional;
@@ -46,60 +46,62 @@ import java.util.function.Predicate;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 public class TestInit implements ModInitializer {
-    private static final Map<Character, Predicate<CachedBlockPosition>> DEFAULT_KEYS = MultiblockPatternKeyBuilder.start()
-            .where('G', CachedBlockPosition.matchesBlockState(state -> state.getBlock() == Blocks.GLASS))
-            .where('I', CachedBlockPosition.matchesBlockState(state -> state.getBlock() == Blocks.IRON_BLOCK))
+    private static final Map<Character, Predicate<BlockInWorld>> DEFAULT_KEYS = MultiblockPatternKeyBuilder.start()
+            .where('G', BlockInWorld.hasState(state -> state.getBlock() == Blocks.GLASS))
+            .where('I', BlockInWorld.hasState(state -> state.getBlock() == Blocks.IRON_BLOCK))
             .build();
 
     @Override
     public void onInitialize() {
-        MultiblockLib.INSTANCE.registerMultiblock(new Identifier("multiblocklibtest", "rotatable"), TestMultiblock::new, DEFAULT_KEYS);
-        MultiblockLib.INSTANCE.registerMultiblock(new Identifier("multiblocklibtest", "other"), TestMultiblock::new, DEFAULT_KEYS);
-        MultiblockLib.INSTANCE.registerMultiblock(new Identifier("multiblocklibtest", "test"), TestMultiblock::new, DEFAULT_KEYS);
-        MultiblockLib.INSTANCE.registerMultiblock(new Identifier("multiblocklibtest", "chonk"), TestMultiblock::new, DEFAULT_KEYS);
+        MultiblockLib.INSTANCE.registerMultiblock(new ResourceLocation("multiblocklibtest", "rotatable"), TestMultiblock::new, DEFAULT_KEYS);
+        MultiblockLib.INSTANCE.registerMultiblock(new ResourceLocation("multiblocklibtest", "other"), TestMultiblock::new, DEFAULT_KEYS);
+        MultiblockLib.INSTANCE.registerMultiblock(new ResourceLocation("multiblocklibtest", "test"), TestMultiblock::new, DEFAULT_KEYS);
+        MultiblockLib.INSTANCE.registerMultiblock(new ResourceLocation("multiblocklibtest", "chonk"), TestMultiblock::new, DEFAULT_KEYS);
 
         MultiblockLib.INSTANCE.registerMultiblock(
-                new Identifier("multiblocklibtest", "big_chest"),
+                new ResourceLocation("multiblocklibtest", "big_chest"),
                 BigChestMultiblock::new,
                 MultiblockPatternKeyBuilder.start()
-                        .where('L', CachedBlockPosition.matchesBlockState(state -> state.isIn(BlockTags.LOGS)))
-                        .where('P', CachedBlockPosition.matchesBlockState(state -> state.isIn(BlockTags.PLANKS)))
-                        .where('I', CachedBlockPosition.matchesBlockState(state -> state.isOf(Blocks.IRON_BLOCK)))
+                        .where('L', BlockInWorld.hasState(state -> state.is(BlockTags.LOGS)))
+                        .where('P', BlockInWorld.hasState(state -> state.is(BlockTags.PLANKS)))
+                        .where('I', BlockInWorld.hasState(state -> state.is(Blocks.IRON_BLOCK)))
                         .build()
         );
 
-        Registry.register(Registry.ITEM, new Identifier("multiblocklibtest", "test_assembler"), new TestAssemblerItem());
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation("multiblocklibtest", "test_assembler"), new TestAssemblerItem());
     }
 
     static class TestAssemblerItem extends Item {
         public TestAssemblerItem() {
-            super(new FabricItemSettings().group(ItemGroup.TOOLS));
+            super(new FabricItemSettings());
         }
 
         @Override
-        public ActionResult useOnBlock(ItemUsageContext context) {
-            Optional<Multiblock> multiblock = MultiblockLib.INSTANCE.getMultiblock(context.getWorld(), context.getBlockPos());
+        public InteractionResult useOn(UseOnContext context) {
+            Optional<Multiblock> multiblock = MultiblockLib.INSTANCE.getMultiblock(context.getLevel(), context.getClickedPos());
             if (multiblock.isPresent()) {
                 if (MultiblockLib.INSTANCE.tryDisassembleMultiblock(multiblock.get(), false)) {
-                    if (context.getWorld().isClient) {
-                        context.getPlayer().playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 2.0F, 1.0F);
+                    if (context.getLevel().isClientSide) {
+                        context.getPlayer().playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 2.0F, 1.0F);
                     }
 
-                    return ActionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             } else {
-                if (MultiblockLib.INSTANCE.tryAssembleMultiblock(context.getWorld(), context.getPlayerFacing(), context.getBlockPos())) {
-                    if (context.getWorld().isClient) {
-                        context.getPlayer().playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 2.0F, 1.0F);
+                if (MultiblockLib.INSTANCE.tryAssembleMultiblock(context.getLevel(), context.getHorizontalDirection(), context.getClickedPos())) {
+                    if (context.getLevel().isClientSide) {
+                        context.getPlayer().playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 2.0F, 1.0F);
                     }
 
-                    return ActionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
 
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         }
+
     }
 }

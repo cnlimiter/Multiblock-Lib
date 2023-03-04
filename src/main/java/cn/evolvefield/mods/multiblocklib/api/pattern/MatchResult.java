@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,17 @@
 package cn.evolvefield.mods.multiblocklib.api.pattern;
 
 import cn.evolvefield.mods.multiblocklib.api.Multiblock;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+
 
 /**
  * A result of a match that is passed to the {@link Multiblock} so it can keep track
  * of its dimensions and other information.
  *
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
-public record MatchResult(MultiblockPattern pattern, BlockPos bottomLeftPos, BlockPos bottomLeftPosCorrected, BlockBox box, int height, int width,
+public record MatchResult(MultiblockPattern pattern, BlockPos bottomLeftPos, BlockPos bottomLeftPosCorrected, BoundingBox box, int height, int width,
                           int depth) {
 }

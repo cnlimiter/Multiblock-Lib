@@ -2,20 +2,22 @@ import java.util.*
 
 plugins {
     id("maven-publish")
-    id("fabric-loom") version "0.11-SNAPSHOT"
-    id("io.github.juuxel.loom-quiltflower") version "1.7.1"
-    id("org.quiltmc.quilt-mappings-on-loom") version "4.0.0"
+    id("fabric-loom") version "1.0-SNAPSHOT"
+
     id("org.cadixdev.licenser") version "0.6.1"
 }
 
 val modVersion: String by project
+val minecraftVersion: String by project
+val parchementVersion: String by project
 
-group = "io.github.jamalam360"
+group = "cn.evolvefield.mods"
 version = modVersion
 
 repositories {
     val mavenUrls = listOf(
-        "https://ladysnake.jfrog.io/artifactory/mods"
+        "https://ladysnake.jfrog.io/artifactory/mods",
+        "https://maven.parchmentmc.org"
     )
 
     for (url in mavenUrls) {
@@ -26,7 +28,8 @@ repositories {
 dependencies {
     minecraft(libs.minecraft)
     mappings(loom.layered {
-        addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:1.18.2+build.22:v2"))
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${minecraftVersion}:${parchementVersion}@zip")
     })
 
     modImplementation(libs.loader)
@@ -65,7 +68,7 @@ java {
     withSourcesJar()
     withJavadocJar()
 }
-    
+
 tasks {
     processResources {
         inputs.property("version", project.version)
@@ -98,7 +101,7 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "io.github.jamalam360"
+            groupId = "cn.evolvefield.mods"
             artifactId = "multiblocklib"
             version = modVersion
             from(components["java"])
@@ -111,8 +114,8 @@ publishing {
                     && System.getenv()["MAVEN_PASSWORD"] != null)
         ) {
             maven {
-                name = "JamalamMavenRelease"
-                url = uri("https://maven.jamalam.tech/releases")
+                name = "Release"
+                url = uri("https://maven.nova-committee.cn/releases")
                 credentials {
                     if (project.rootProject.file("local.properties").exists()) {
                         val localProperties = Properties()

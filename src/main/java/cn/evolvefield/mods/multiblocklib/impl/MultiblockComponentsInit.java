@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,13 +29,14 @@ import dev.onyxstudios.cca.api.v3.component.ComponentRegistryV3;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentInitializer;
 import cn.evolvefield.mods.multiblocklib.impl.components.MultiblockProviderImpl;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 public class MultiblockComponentsInit implements WorldComponentInitializer {
-    public static final ComponentKey<MultiblockProviderImpl> PROVIDER = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier("multiblocklib", "multiblock_provider"), MultiblockProviderImpl.class);
+    public static final ComponentKey<MultiblockProviderImpl> PROVIDER = ComponentRegistryV3.INSTANCE.getOrCreate(new ResourceLocation("multiblocklib", "multiblock_provider"), MultiblockProviderImpl.class);
 
     @Override
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {

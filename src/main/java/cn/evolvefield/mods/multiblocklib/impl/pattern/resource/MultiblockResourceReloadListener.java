@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,11 @@ import cn.evolvefield.mods.multiblocklib.impl.MultiblockLogger;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.minecraft.resource.JsonDataLoader;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,14 +44,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  * {@link MultiblockPatterns} list.
  *
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
-public class MultiblockResourceReloadListener extends JsonDataLoader implements IdentifiableResourceReloadListener {
+public class MultiblockResourceReloadListener extends SimpleJsonResourceReloadListener implements IdentifiableResourceReloadListener {
     public MultiblockResourceReloadListener() {
         super(new Gson(), "multiblock_patterns");
     }
 
     @Override
-    public void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
+    public void apply(Map<ResourceLocation, JsonElement> prepared, ResourceManager manager, ProfilerFiller profiler) {
         MultiblockPatterns.INSTANCE.clear();
         AtomicInteger count = new AtomicInteger();
         prepared.forEach((id, element) -> {
@@ -66,7 +68,7 @@ public class MultiblockResourceReloadListener extends JsonDataLoader implements 
     }
 
     @Override
-    public Identifier getFabricId() {
-        return new Identifier("multiblocklib", "multiblock_patterns");
+    public ResourceLocation getFabricId() {
+        return new ResourceLocation("multiblocklib", "multiblock_patterns");
     }
 }

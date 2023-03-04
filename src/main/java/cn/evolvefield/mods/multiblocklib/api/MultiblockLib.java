@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,12 @@ package cn.evolvefield.mods.multiblocklib.api;
 
 import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPattern;
 import cn.evolvefield.mods.multiblocklib.impl.MultiblockLibImpl;
-import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 
 import java.util.Map;
 import java.util.Optional;
@@ -41,48 +42,49 @@ import java.util.function.Predicate;
  * and assembling/disassembling them.
  *
  * @author Jamalam360
+ * @devoloper cnlimiter
  * @see MultiblockLibImpl
  */
 public interface MultiblockLib {
     MultiblockLib INSTANCE = new MultiblockLibImpl();
 
     /**
-     * @param identifier The {@link Identifier} of the {@link MultiblockPattern} to register.
+     * @param identifier The {@link ResourceLocation} of the {@link MultiblockPattern} to register.
      * @param provider   The {@link MultiblockProvider} to register.
      * @param keys       The {@link Map} of keys to use for the {@link MultiblockPattern}.
      */
-    void registerMultiblock(Identifier identifier, MultiblockProvider provider, Map<Character, Predicate<CachedBlockPosition>> keys);
+    void registerMultiblock(ResourceLocation identifier, MultiblockProvider provider, Map<Character, Predicate<BlockInWorld>> keys);
 
     /**
      * Checks all registered multiblock patterns for a match. It is more efficient to use one of
      * the other methods below if you have a pattern ID.
      *
-     * @param world     The {@link World} to use.
+     * @param world     The {@link Level} to use.
      * @param direction The {@link Direction} to check.
      * @param pos       The {@link BlockPos} of the bottom left corner of the multiblock.
      * @return {@code true} if the multiblock was successfully assembled, {@code false} otherwise.
      */
-    boolean tryAssembleMultiblock(World world, Direction direction, BlockPos pos);
+    boolean tryAssembleMultiblock(Level world, Direction direction, BlockPos pos);
 
 
     /**
-     * @param patternId The {@link Identifier} of the {@link MultiblockPattern} to test for.
-     * @param world     The {@link World} to use.
+     * @param patternId The {@link ResourceLocation} of the {@link MultiblockPattern} to test for.
+     * @param world     The {@link Level} to use.
      * @param direction The {@link Direction} to check.
      * @param pos       The {@link BlockPos} of the bottom left corner of the multiblock.
      * @return {@code true} if the multiblock was successfully assembled, {@code false} otherwise.
      */
-    boolean tryAssembleMultiblock(Identifier patternId, World world, Direction direction, BlockPos pos);
+    boolean tryAssembleMultiblock(ResourceLocation patternId, Level world, Direction direction, BlockPos pos);
 
 
     /**
      * @param pattern The {@link MultiblockPattern} to test for.
-     * @param world   The {@link World} to use.
+     * @param world   The {@link Level} to use.
      * @param direction The {@link Direction} to check.
      * @param pos     The {@link BlockPos} of the bottom left corner of the multiblock.
      * @return {@code true} if the multiblock was successfully assembled, {@code false} otherwise.
      */
-    boolean tryAssembleMultiblock(MultiblockPattern pattern, World world, Direction direction, BlockPos pos);
+    boolean tryAssembleMultiblock(MultiblockPattern pattern, Level world, Direction direction, BlockPos pos);
 
     /**
      * @param multiblock The {@link Multiblock} to try to disassemble.
@@ -98,9 +100,9 @@ public interface MultiblockLib {
     /**
      * Checks whether the given {@link BlockPos} is within the bounds of a multiblock.
      *
-     * @param world The {@link World} to use.
+     * @param world The {@link Level} to use.
      * @param pos   The {@link BlockPos} of the block to check.
      * @return {@code true} if the block is within the bounds of a multiblock, {@code false} otherwise.
      */
-    Optional<Multiblock> getMultiblock(World world, BlockPos pos);
+    Optional<Multiblock> getMultiblock(Level world, BlockPos pos);
 }

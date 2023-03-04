@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 package cn.evolvefield.mods.multiblocklib.api.pattern;
 
 import com.google.common.collect.Maps;
-import net.minecraft.block.pattern.CachedBlockPosition;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +34,10 @@ import java.util.function.Predicate;
 /**
  * Wraps around a {@link HashMap} to provide a nice API with `where` rather than `put`
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 public class MultiblockPatternKeyBuilder {
-    private final Map<Character, Predicate<CachedBlockPosition>> keys = Maps.newHashMap();
+    private final Map<Character, Predicate<BlockInWorld>> keys = Maps.newHashMap();
 
     private MultiblockPatternKeyBuilder(){}
 
@@ -44,12 +45,12 @@ public class MultiblockPatternKeyBuilder {
         return new MultiblockPatternKeyBuilder();
     }
 
-    public MultiblockPatternKeyBuilder where(char key, Predicate<CachedBlockPosition> predicate) {
+    public MultiblockPatternKeyBuilder where(char key, Predicate<BlockInWorld> predicate) {
         keys.put(key, predicate);
         return this;
     }
 
-    public Map<Character, Predicate<CachedBlockPosition>> build(){
+    public Map<Character, Predicate<BlockInWorld>> build(){
         return keys;
     }
 }

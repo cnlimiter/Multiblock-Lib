@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,15 +27,16 @@ package cn.evolvefield.mods.multiblocklib.impl;
 import cn.evolvefield.mods.multiblocklib.impl.pattern.resource.MultiblockResourceReloadListener;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.server.packs.PackType;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 public class MultiblockLibEntrypoint implements ModInitializer {
     @Override
     public void onInitialize() {
         MultiblockLogger.INSTANCE.info("May your blocks be plentiful.");
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new MultiblockResourceReloadListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new MultiblockResourceReloadListener());
     }
 }

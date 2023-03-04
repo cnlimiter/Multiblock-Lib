@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,14 +26,14 @@ package cn.evolvefield.mods.multiblocklib.impl.mixin;
 
 import cn.evolvefield.mods.multiblocklib.api.Multiblock;
 import cn.evolvefield.mods.multiblocklib.api.MultiblockLib;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -45,30 +45,32 @@ import java.util.Optional;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 
-@Mixin(WorldRenderer.class)
+@Mixin(LevelRenderer.class)
 public abstract class WorldRendererMixin {
-    @Shadow
-    private @Nullable ClientWorld world;
+
 
     @Shadow
-    private static void drawShapeOutline(MatrixStack matrices, VertexConsumer vertexConsumer, VoxelShape voxelShape, double d, double e, double f, float g, float h, float i, float j) {
+    public static void renderVoxelShape(PoseStack matrices, VertexConsumer vertexConsumer, VoxelShape voxelShape, double d, double e, double f, float g, float h, float i, float j) {
     }
+
+    @Shadow @Nullable private ClientLevel level;
 
     /**
      * Checks if the block is a multiblock and if so, renders the multiblocks outline (from the bottom left of
      * the multiblock), rather than rendering the blocks outline.
      */
     @Inject(
-            method = "drawBlockOutline",
+            method = "renderHitOutline",
             at = @At("HEAD"),
             cancellable = true
     )
-    public void multiblocklib$modifyOutlineForMultiblocks(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos blockPos, BlockState blockState, CallbackInfo ci) {
-        Optional<Multiblock> multiblock = MultiblockLib.INSTANCE.getMultiblock(world, blockPos);
+    public void multiblocklib$modifyOutlineForMultiblocks(PoseStack matrices, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos blockPos, BlockState blockState, CallbackInfo ci) {
+        Optional<Multiblock> multiblock = MultiblockLib.INSTANCE.getMultiblock(level, blockPos);
         if (multiblock.isPresent()) {
-            drawShapeOutline(
+            renderVoxelShape(
                     matrices,
                     vertexConsumer,
                     multiblock.get().getOutlineShape(),

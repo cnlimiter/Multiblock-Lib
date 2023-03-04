@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,29 +26,32 @@ package cn.evolvefield.mods.multiblocklib.testmod;
 
 import cn.evolvefield.mods.multiblocklib.api.Multiblock;
 import cn.evolvefield.mods.multiblocklib.api.pattern.MatchResult;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 public class TestMultiblock extends Multiblock {
-    public TestMultiblock(World world, MatchResult match) {
+    public TestMultiblock(Level world, MatchResult match) {
         super(world, match);
     }
 
+
     @Override
-    public ActionResult onUse(World world, BlockPos clickPos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
-        if (!world.isClient) {
-            player.sendMessage(new LiteralText(getBlocks(Blocks.IRON_BLOCK).size() + " iron blocks"), false);
+    public InteractionResult onUse(Level world, BlockPos clickPos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (!world.isClientSide) {
+            player.displayClientMessage(Component.literal(getBlocks(Blocks.IRON_BLOCK).size() + " iron blocks"), false);
         }
 
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
+
 }

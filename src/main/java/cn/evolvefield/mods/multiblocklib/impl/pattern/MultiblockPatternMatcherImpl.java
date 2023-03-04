@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,11 +27,12 @@ package cn.evolvefield.mods.multiblocklib.impl.pattern;
 import cn.evolvefield.mods.multiblocklib.api.pattern.MatchResult;
 import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPattern;
 import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPatternMatcher;
-import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+
 
 import java.util.Map;
 import java.util.Optional;
@@ -39,11 +40,12 @@ import java.util.function.Predicate;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 @SuppressWarnings("unchecked")
 public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
     @Override
-    public Optional<MatchResult> tryMatchPattern(BlockPos bottomLeft, Direction direction, World world, MultiblockPattern pattern, Map<Character, Predicate<CachedBlockPosition>> keys) {
+    public Optional<MatchResult> tryMatchPattern(BlockPos bottomLeft, Direction direction, Level world, MultiblockPattern pattern, Map<Character, Predicate<BlockInWorld>> keys) {
         if (direction == Direction.DOWN || direction == Direction.UP) {
             return Optional.empty();
         }
@@ -51,12 +53,12 @@ public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
         return tryMatchPattern(bottomLeft, direction, world, pattern, keys, 0);
     }
 
-    private Optional<MatchResult> tryMatchPattern(BlockPos bottomLeft, Direction direction, World world, MultiblockPattern pattern, Map<Character, Predicate<CachedBlockPosition>> keys, int rotateCount) {
+    private Optional<MatchResult> tryMatchPattern(BlockPos bottomLeft, Direction direction, Level world, MultiblockPattern pattern, Map<Character, Predicate<BlockInWorld>> keys, int rotateCount) {
         boolean checkedAllLayers = false;
         int layerNumber = 0;
         int loopCount = 0;
-        BlockPos finalPos = bottomLeft.mutableCopy().toImmutable();
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos finalPos = bottomLeft.mutable().immutable();
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         while (!checkedAllLayers) {
             if (layerNumber >= pattern.layers().length) {
                 checkedAllLayers = true;
@@ -64,7 +66,7 @@ public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
             }
 
             MultiblockPattern.Layer layer = pattern.layers()[layerNumber];
-            Predicate<CachedBlockPosition>[][] blocks = constructPredicateListFromLayer(layer, keys);
+            Predicate<BlockInWorld>[][] blocks = constructPredicateListFromLayer(layer, keys);
 
             switch (rotateCount) {
                 case 0:
@@ -111,19 +113,19 @@ public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
                 }
             }
 
-            finalPos = mutable.toImmutable();
+            finalPos = mutable.immutable();
         }
 
         BlockPos realBottomLeftFacingEast = correctToBottomLeft(pattern, bottomLeft, direction);
 
         return Optional.of(
-                new MatchResult(pattern, bottomLeft, realBottomLeftFacingEast, BlockBox.create(realBottomLeftFacingEast, realBottomLeftFacingEast.mutableCopy().move(pattern.width(), loopCount, pattern.depth())), loopCount, pattern.width(), pattern.depth())
+                new MatchResult(pattern, bottomLeft, realBottomLeftFacingEast, BoundingBox.fromCorners(realBottomLeftFacingEast, realBottomLeftFacingEast.mutable().move(pattern.width(), loopCount, pattern.depth())), loopCount, pattern.width(), pattern.depth())
         );
     }
 
-    private int matchesRepeatableLayer(Predicate<CachedBlockPosition>[][] blocks, World world, BlockPos.Mutable mutable, Direction direction) {
+    private int matchesRepeatableLayer(Predicate<BlockInWorld>[][] blocks, Level world, BlockPos.MutableBlockPos mutable, Direction direction) {
         int matches = 0;
-        BlockPos base = mutable.toImmutable();
+        BlockPos base = mutable.immutable();
 
         while (true) {
             if (matchesLayer(blocks, world, mutable, direction)) {
@@ -142,10 +144,10 @@ public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
         }
     }
 
-    private boolean matchesLayer(Predicate<CachedBlockPosition>[][] blocks, World world, BlockPos.Mutable pos, Direction direction) {
-        BlockPos bottomLeft = pos.toImmutable();
+    private boolean matchesLayer(Predicate<BlockInWorld>[][] blocks, Level world, BlockPos.MutableBlockPos pos, Direction direction) {
+        BlockPos bottomLeft = pos.immutable();
         for (int rowIndex = 0; rowIndex < blocks.length; rowIndex++) {
-            Predicate<CachedBlockPosition>[] row = blocks[rowIndex];
+            Predicate<BlockInWorld>[] row = blocks[rowIndex];
 
             switch (direction) {
                 case NORTH -> pos.setX(bottomLeft.getX() + rowIndex);
@@ -155,7 +157,7 @@ public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
             }
 
             for (int columnIndex = 0; columnIndex < row.length; columnIndex++) {
-                Predicate<CachedBlockPosition> block = row[columnIndex];
+                Predicate<BlockInWorld> block = row[columnIndex];
 
                 switch (direction) {
                     case NORTH -> pos.setZ(bottomLeft.getZ() - columnIndex);
@@ -164,7 +166,7 @@ public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
                     case WEST -> pos.setX(bottomLeft.getX() - columnIndex);
                 }
 
-                if (!block.test(new CachedBlockPosition(world, pos, true))) {
+                if (!block.test(new BlockInWorld(world, pos, true))) {
                     return false;
                 }
             }
@@ -173,8 +175,8 @@ public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
         return true;
     }
 
-    private Predicate<CachedBlockPosition>[][] constructPredicateListFromLayer(MultiblockPattern.Layer layer, Map<Character, Predicate<CachedBlockPosition>> key) {
-        Predicate<CachedBlockPosition>[][] blocks = (Predicate<CachedBlockPosition>[][]) new Predicate[layer.rows()[0].length()][layer.rows().length];
+    private Predicate<BlockInWorld>[][] constructPredicateListFromLayer(MultiblockPattern.Layer layer, Map<Character, Predicate<BlockInWorld>> key) {
+        Predicate<BlockInWorld>[][] blocks = (Predicate<BlockInWorld>[][]) new Predicate[layer.rows()[0].length()][layer.rows().length];
 
         for (int i = 0; i < layer.rows().length; i++) {
             for (int j = 0; j < layer.rows()[i].length(); j++) {
@@ -193,10 +195,10 @@ public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
     private BlockPos correctToBottomLeft(MultiblockPattern pattern, BlockPos bottomLeft, Direction direction) {
         BlockPos newPos = null;
         switch (direction) {
-            case NORTH -> newPos = bottomLeft.add(0, 0, -(pattern.width() - 1));
-            case SOUTH -> newPos = bottomLeft.add(-(pattern.depth() - 1), 0, 0);
+            case NORTH -> newPos = bottomLeft.offset(0, 0, -(pattern.width() - 1));
+            case SOUTH -> newPos = bottomLeft.offset(-(pattern.depth() - 1), 0, 0);
             case EAST -> newPos = bottomLeft;
-            case WEST -> newPos = bottomLeft.add(-(pattern.depth() - 1), 0, -(pattern.width() - 1));
+            case WEST -> newPos = bottomLeft.offset(-(pattern.depth() - 1), 0, -(pattern.width() - 1));
         }
 
         return newPos;
@@ -205,9 +207,9 @@ public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {
     /**
      * From Stack overflow lol
      */
-    private static Predicate<CachedBlockPosition>[][] rotateClockwise(Predicate<CachedBlockPosition>[][] matrix) {
+    private static Predicate<BlockInWorld>[][] rotateClockwise(Predicate<BlockInWorld>[][] matrix) {
         int size = matrix.length;
-        Predicate<CachedBlockPosition>[][] ret = new Predicate[size][size];
+        Predicate<BlockInWorld>[][] ret = new Predicate[size][size];
 
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {

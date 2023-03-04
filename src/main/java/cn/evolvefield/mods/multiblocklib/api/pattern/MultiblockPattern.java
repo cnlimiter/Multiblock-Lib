@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,15 +27,16 @@ package cn.evolvefield.mods.multiblocklib.api.pattern;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Represents a multiblock pattern as defined in JSON files in the
  * {@code /data/[namespace]/multiblock_patterns} directory.
  *
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
-public record MultiblockPattern(Identifier identifier, Layer[] layers) {
+public record MultiblockPattern(ResourceLocation identifier, Layer[] layers) {
     /**
      * @return The length of this pattern in the y-axis
      * @implNote This is the number of layers in this pattern. The return
@@ -59,7 +60,7 @@ public record MultiblockPattern(Identifier identifier, Layer[] layers) {
         return layers[0].rows.length;
     }
 
-    public static MultiblockPattern deserialize(Identifier id, JsonElement json) {
+    public static MultiblockPattern deserialize(ResourceLocation id, JsonElement json) {
         JsonObject obj = json.getAsJsonObject();
         int version = obj.has("version") ? obj.get("version").getAsInt() : MultiblockPatterns.LATEST_VERSION;
 

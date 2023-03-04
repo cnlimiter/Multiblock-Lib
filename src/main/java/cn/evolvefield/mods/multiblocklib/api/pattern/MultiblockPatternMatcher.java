@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,19 +25,21 @@
 package cn.evolvefield.mods.multiblocklib.api.pattern;
 
 import cn.evolvefield.mods.multiblocklib.impl.pattern.MultiblockPatternMatcherImpl;
-import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * Tests a given {@link BlockPos} in a {@link World} to see if it matches a {@link MultiblockPattern}.
+ * Tests a given {@link BlockPos} in a {@link Level} to see if it matches a {@link MultiblockPattern}.
  *
  * @author Jamalam360
+ * @devoloper cnlimiter
  * @see MultiblockPatternMatcherImpl
  */
 public interface MultiblockPatternMatcher {
@@ -52,5 +54,5 @@ public interface MultiblockPatternMatcher {
      * @return An {@link Optional} containing the {@link MatchResult} if the pattern matches,
      * or an empty {@link Optional} if it does not.
      */
-    Optional<MatchResult> tryMatchPattern(BlockPos bottomLeft, Direction direction, World world, MultiblockPattern pattern, Map<Character, Predicate<CachedBlockPosition>> keys);
+    Optional<MatchResult> tryMatchPattern(BlockPos bottomLeft, Direction direction, Level world, MultiblockPattern pattern, Map<Character, Predicate<BlockInWorld>> keys);
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,12 @@ import cn.evolvefield.mods.multiblocklib.api.pattern.MatchResult;
 import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPattern;
 import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPatternMatcher;
 import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPatterns;
-import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 
 import java.util.Map;
 import java.util.Optional;
@@ -46,19 +47,20 @@ import java.util.function.Predicate;
  * Implementation of {@link MultiblockLib}. Should not be used directly by library users - access through {@link MultiblockLib#INSTANCE}.
  *
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 public class MultiblockLibImpl implements MultiblockLib {
-    private static final Map<Identifier, Map<Character, Predicate<CachedBlockPosition>>> MULTIBLOCK_PATTERNS_TO_KEYS = Maps.newHashMap();
-    private static final Map<Identifier, MultiblockProvider> MULTIBLOCK_PATTERNS_TO_PROVIDERS = Maps.newHashMap();
+    private static final Map<ResourceLocation, Map<Character, Predicate<BlockInWorld>>> MULTIBLOCK_PATTERNS_TO_KEYS = Maps.newHashMap();
+    private static final Map<ResourceLocation, MultiblockProvider> MULTIBLOCK_PATTERNS_TO_PROVIDERS = Maps.newHashMap();
 
     @Override
-    public void registerMultiblock(Identifier identifier, MultiblockProvider provider, Map<Character, Predicate<CachedBlockPosition>> keys) {
+    public void registerMultiblock(ResourceLocation identifier, MultiblockProvider provider, Map<Character, Predicate<BlockInWorld>> keys) {
         MULTIBLOCK_PATTERNS_TO_PROVIDERS.put(identifier, provider);
         MULTIBLOCK_PATTERNS_TO_KEYS.put(identifier, keys);
     }
 
     @Override
-    public boolean tryAssembleMultiblock(World world, Direction direction, BlockPos pos) {
+    public boolean tryAssembleMultiblock(Level world, Direction direction, BlockPos pos) {
         for (MultiblockPattern pattern : MultiblockPatterns.INSTANCE.getPatterns()) {
             if (tryAssembleMultiblock(pattern, world, direction, pos)) {
                 return true;
@@ -69,13 +71,13 @@ public class MultiblockLibImpl implements MultiblockLib {
     }
 
     @Override
-    public boolean tryAssembleMultiblock(Identifier patternId, World world, Direction direction, BlockPos pos) {
+    public boolean tryAssembleMultiblock(ResourceLocation patternId, Level world, Direction direction, BlockPos pos) {
         Optional<MultiblockPattern> optional = MultiblockPatterns.INSTANCE.getPattern(patternId);
         return optional.filter(multiblockPattern -> tryAssembleMultiblock(multiblockPattern, world, direction, pos)).isPresent();
     }
 
     @Override
-    public boolean tryAssembleMultiblock(MultiblockPattern pattern, World world, Direction direction, BlockPos pos) {
+    public boolean tryAssembleMultiblock(MultiblockPattern pattern, Level world, Direction direction, BlockPos pos) {
         if (MultiblockComponentsInit.PROVIDER.get(world).getMultiblock(pos).isPresent()) {
             return true;
         }
@@ -105,7 +107,7 @@ public class MultiblockLibImpl implements MultiblockLib {
     public boolean tryDisassembleMultiblock(Multiblock multiblock, boolean forced) {
         boolean ableToDisassemble = multiblock.onDisassemble(forced);
         if (ableToDisassemble) {
-            MultiblockComponentsInit.PROVIDER.get(multiblock.getWorld()).removeMultiblock(multiblock);
+            MultiblockComponentsInit.PROVIDER.get(multiblock.getLevel()).removeMultiblock(multiblock);
             return true;
         }
 
@@ -113,7 +115,7 @@ public class MultiblockLibImpl implements MultiblockLib {
     }
 
     @Override
-    public Optional<Multiblock> getMultiblock(World world, BlockPos pos) {
+    public Optional<Multiblock> getMultiblock(Level world, BlockPos pos) {
         return MultiblockComponentsInit.PROVIDER.get(world).getMultiblock(pos);
     }
 }

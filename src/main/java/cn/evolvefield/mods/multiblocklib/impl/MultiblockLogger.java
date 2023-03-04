@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 public class MultiblockLogger {
     public static final Logger INSTANCE = LoggerFactory.getLogger("Multiblock Lib");

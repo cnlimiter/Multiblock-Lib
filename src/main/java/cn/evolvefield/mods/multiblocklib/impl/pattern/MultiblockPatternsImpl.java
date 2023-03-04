@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jamalam360
+ * Copyright (c) 2023 Jamalam360, cnlimiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ package cn.evolvefield.mods.multiblocklib.impl.pattern;
 
 import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPatterns;
 import cn.evolvefield.mods.multiblocklib.api.pattern.MultiblockPattern;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ import java.util.Optional;
 
 /**
  * @author Jamalam360
+ * @devoloper cnlimiter
  */
 public class MultiblockPatternsImpl implements MultiblockPatterns {
     protected static final List<MultiblockPattern> PATTERNS = new ArrayList<>();
@@ -50,7 +51,7 @@ public class MultiblockPatternsImpl implements MultiblockPatterns {
     }
 
     @Override
-    public Optional<MultiblockPattern> getPattern(Identifier id) {
+    public Optional<MultiblockPattern> getPattern(ResourceLocation id) {
         for (MultiblockPattern pattern : PATTERNS) {
             if (pattern.identifier().equals(id)) {
                 return Optional.of(pattern);
