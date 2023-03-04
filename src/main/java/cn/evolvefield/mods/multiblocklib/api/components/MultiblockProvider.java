@@ -35,8 +35,8 @@ import java.util.Optional;
 /**
  * A cardinal component that stores all created {@link Multiblock}s in the {@link net.minecraft.world.level.Level}.
  *
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  * @implSpec The implementation should also tick the {@link Multiblock}s using
  * {@link Multiblock#tick}, and save them to NBT.
  * @see MultiblockProviderImpl

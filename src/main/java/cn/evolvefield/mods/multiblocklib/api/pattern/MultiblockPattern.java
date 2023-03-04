@@ -33,8 +33,8 @@ import net.minecraft.resources.ResourceLocation;
  * Represents a multiblock pattern as defined in JSON files in the
  * {@code /data/[namespace]/multiblock_patterns} directory.
  *
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public record MultiblockPattern(ResourceLocation identifier, Layer[] layers) {
     /**

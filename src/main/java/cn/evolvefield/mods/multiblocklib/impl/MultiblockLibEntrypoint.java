@@ -30,8 +30,8 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.packs.PackType;
 
 /**
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class MultiblockLibEntrypoint implements ModInitializer {
     @Override

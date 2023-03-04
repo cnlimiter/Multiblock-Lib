@@ -42,8 +42,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class BigChestMultiblock extends Multiblock implements MenuProvider {
     private final SimpleContainer inventory = new SimpleContainer(54);

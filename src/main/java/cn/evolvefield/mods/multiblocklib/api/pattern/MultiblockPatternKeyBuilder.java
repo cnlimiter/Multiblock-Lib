@@ -33,8 +33,8 @@ import java.util.function.Predicate;
 
 /**
  * Wraps around a {@link HashMap} to provide a nice API with `where` rather than `put`
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class MultiblockPatternKeyBuilder {
     private final Map<Character, Predicate<BlockInWorld>> keys = Maps.newHashMap();

@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class MultiblockPatternsImpl implements MultiblockPatterns {
     protected static final List<MultiblockPattern> PATTERNS = new ArrayList<>();

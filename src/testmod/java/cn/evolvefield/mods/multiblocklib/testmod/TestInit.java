@@ -45,8 +45,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class TestInit implements ModInitializer {
     private static final Map<Character, Predicate<BlockInWorld>> DEFAULT_KEYS = MultiblockPatternKeyBuilder.start()

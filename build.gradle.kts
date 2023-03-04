@@ -66,7 +66,7 @@ loom {
 
 java {
     withSourcesJar()
-    withJavadocJar()
+    //withJavadocJar()
 }
 
 tasks {
@@ -86,15 +86,28 @@ tasks {
     }
 
     jar {
-        archiveBaseName.set("multiblocklib")
+        archiveBaseName.set("Multiblock-Lib")
     }
 
     remapJar {
-        archiveBaseName.set("multiblocklib")
+        archiveBaseName.set("Multiblock-Lib")
     }
 
-    withType<JavaCompile> {
+    withType<JavaCompile>().configureEach  {
         options.release.set(17)
+        options.encoding = "UTF-8"
+    }
+
+    withType<Javadoc>().configureEach  {
+        with(options as StandardJavadocDocletOptions) {
+            source = "17"
+            encoding = "UTF-8"
+            docEncoding = "UTF-8"
+            charSet = "UTF-8"
+
+            addStringOption("Xdoclint:none", "-quiet")
+            addStringOption("Xwerror", "-quiet")
+        }
     }
 }
 

@@ -33,8 +33,8 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
  * A result of a match that is passed to the {@link Multiblock} so it can keep track
  * of its dimensions and other information.
  *
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public record MatchResult(MultiblockPattern pattern, BlockPos bottomLeftPos, BlockPos bottomLeftPosCorrected, BoundingBox box, int height, int width,
                           int depth) {

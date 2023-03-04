@@ -30,8 +30,8 @@ import net.minecraft.world.level.Level;
 /**
  * Used by {@link MultiblockLib#tryAssembleMultiblock} to create a {@link Multiblock} instance.
  *
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 @FunctionalInterface
 public interface MultiblockProvider {

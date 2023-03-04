@@ -41,8 +41,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 @SuppressWarnings("unused")
 public abstract class Multiblock {

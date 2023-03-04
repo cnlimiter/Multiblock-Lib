@@ -43,8 +43,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Adds all the JSON files in the {@code data/[namespace]/multiblock_patterns} directory to the
  * {@link MultiblockPatterns} list.
  *
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class MultiblockResourceReloadListener extends SimpleJsonResourceReloadListener implements IdentifiableResourceReloadListener {
     public MultiblockResourceReloadListener() {

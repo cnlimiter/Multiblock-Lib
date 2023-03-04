@@ -35,8 +35,8 @@ import java.util.Optional;
  * Keeps a record of al the {@link MultiblockPattern}s that have been added via JSON.
  *
  * @see MultiblockPatternsImpl
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public interface MultiblockPatterns {
     MultiblockPatterns INSTANCE = new MultiblockPatternsImpl();

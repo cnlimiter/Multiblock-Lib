@@ -44,8 +44,8 @@ import java.util.*;
  * A cardinal component that stores all created {@link Multiblock}s in the {@link Level}.
  * It is also responsible for ticking {@link Multiblock}s.
  *
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class MultiblockProviderImpl implements MultiblockProvider, ServerTickingComponent, AutoSyncedComponent {
     private final Level provider;

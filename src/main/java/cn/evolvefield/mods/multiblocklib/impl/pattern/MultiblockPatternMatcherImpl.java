@@ -39,8 +39,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 @SuppressWarnings("unchecked")
 public class MultiblockPatternMatcherImpl implements MultiblockPatternMatcher {

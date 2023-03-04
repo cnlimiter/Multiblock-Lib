@@ -41,8 +41,8 @@ import java.util.function.Predicate;
  * The main MultiblockLib API. Responsible for registering {@link Multiblock}s
  * and assembling/disassembling them.
  *
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  * @see MultiblockLibImpl
  */
 public interface MultiblockLib {

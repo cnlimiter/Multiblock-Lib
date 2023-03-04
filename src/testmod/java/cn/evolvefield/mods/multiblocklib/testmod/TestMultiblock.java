@@ -36,8 +36,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class TestMultiblock extends Multiblock {
     public TestMultiblock(Level world, MatchResult match) {

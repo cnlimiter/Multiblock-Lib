@@ -32,8 +32,8 @@ import cn.evolvefield.mods.multiblocklib.impl.components.MultiblockProviderImpl;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class MultiblockComponentsInit implements WorldComponentInitializer {
     public static final ComponentKey<MultiblockProviderImpl> PROVIDER = ComponentRegistryV3.INSTANCE.getOrCreate(new ResourceLocation("multiblocklib", "multiblock_provider"), MultiblockProviderImpl.class);

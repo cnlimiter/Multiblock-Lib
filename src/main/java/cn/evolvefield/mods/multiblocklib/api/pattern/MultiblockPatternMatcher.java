@@ -38,8 +38,8 @@ import java.util.function.Predicate;
 /**
  * Tests a given {@link BlockPos} in a {@link Level} to see if it matches a {@link MultiblockPattern}.
  *
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  * @see MultiblockPatternMatcherImpl
  */
 public interface MultiblockPatternMatcher {

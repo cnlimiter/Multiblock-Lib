@@ -46,8 +46,8 @@ import java.util.function.Predicate;
 /**
  * Implementation of {@link MultiblockLib}. Should not be used directly by library users - access through {@link MultiblockLib#INSTANCE}.
  *
- * @author Jamalam360
- * @devoloper cnlimiter
+ * @author Jamalam360, cnlimiter
+
  */
 public class MultiblockLibImpl implements MultiblockLib {
     private static final Map<ResourceLocation, Map<Character, Predicate<BlockInWorld>>> MULTIBLOCK_PATTERNS_TO_KEYS = Maps.newHashMap();

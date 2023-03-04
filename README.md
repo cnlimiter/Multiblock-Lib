@@ -10,12 +10,12 @@ A **WIP** library for the Fabric modloader to help easily create multiblock stru
 ```groovy
     repositories {
         maven {
-            url 'https://maven.jamalam.tech/releases'
+            url 'https://maven.nova-committee.cn/releases'
         }
     }
 
     dependencies {
-        modImplementation 'io.github.jamalam360:multiblocklib:{VERSION}'
+        modImplementation 'cn.evolvefield.mods:multiblocklib:{VERSION}'
     }
 ```
 
